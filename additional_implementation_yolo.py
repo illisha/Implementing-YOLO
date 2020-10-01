@@ -1,19 +1,18 @@
-import utils
-import torch
-from tqdm import tqdm
-import torch.nn as nn
 import numpy as np
+from tqdm import tqdm
+import torch
+import torch.nn as nn
+import utils
 
-def loss_fn(o1,o2,t1,t2):
-    l = nn.CrossEntropyLoss()
+def loss_fn(o1,o2,t1,t2):	#loss function used
+    l = nn.CrossEntropyLoss()	
     
     loss_s = l(o1,t1)
     loss_e = l(o2,t2)
     return loss_s+loss_e
-
     
 def train_fn(data_loader,model,optimizer,device,scheduler):
-    model.train()
+    model.train() #train the model
     losses = utils.AverageMeter()
     jaccard = utils.AverageMeter()
     tk0 = tqdm(data_loader,total = len(data_loader))
@@ -72,6 +71,7 @@ def train_fn(data_loader,model,optimizer,device,scheduler):
         jaccard.update(np.mean(jac_scores),ids.size(0))
         losses.update(loss.item(),ids.size(0))
         tk0.set_postfix(loss = losses.avg,jaccard = jaccard.avg)
+
         
 def eval_fn(data_loader,model,device):
     model.eval()
